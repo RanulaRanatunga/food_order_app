@@ -194,6 +194,8 @@ class MenuItemScreenState extends State<MenuItemScreen> {
               _buildSelectedModifiers(menuItem),
               ElevatedButton(
                 onPressed: () {
+                  Provider.of<MenuItemController>(context, listen: false)
+                      .addToCart(menuItem);
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('${menuItem.name} added to cart'),

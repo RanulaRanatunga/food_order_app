@@ -8,6 +8,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:food_order_app/models/modifier_model.dart';
 import 'package:food_order_app/services/data_services.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ModifierController extends ChangeNotifier {
   final List<ModifierGroupModel> _selectedModifierGroups = [];
@@ -107,5 +109,49 @@ class ModifierController extends ChangeNotifier {
   Future<void> refreshData() async {
     DataService.clearCache();
     await loadModifierGroups();
+  }
+
+  Widget _buildModifierGroupTile(ModifierGroupModel modifierGroup) {
+    return Consumer<ModifierController>(
+      builder: (context, controller, child) {
+        final isSelected = controller.isModifierGroupSelected(modifierGroup);
+
+        return Card(
+          margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          child: ListTile(
+            title: Text(
+              modifierGroup.title,
+              style: TextStyle(
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              ),
+            ),
+            subtitle: Text(
+              modifierGroup.ids.isNotEmpty
+                  ? 'ID: ${modifierGroup.ids.first}'
+                  : 'No ID available',
+            ),
+            trailing: Checkbox(
+              value: isSelected,
+              onChanged: (bool? value) {
+                if (value == true) {
+                  controller.addModifierGroup(modifierGroup);
+                } else {
+                  controller.removeModifierGroup(modifierGroup);
+                }
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget buildModifierGroupList() {
+    return ListView.builder(
+      itemCount: modifierGroups.length,
+      itemBuilder: (context, index) {
+        return _buildModifierGroupTile(modifierGroups[index]);
+      },
+    );
   }
 }

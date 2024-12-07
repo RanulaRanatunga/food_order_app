@@ -15,6 +15,7 @@ class MenuItemController extends ChangeNotifier {
   bool _isLoading = false;
   String? _errorMessage;
   MenuItemModel? _selectedMenuItem;
+  final Map<MenuItemModel, int> _cart = {};
 
   List<MenuItemModel> get menuItems =>
       _filteredMenuItems.isNotEmpty ? _filteredMenuItems : _menuItems;
@@ -22,6 +23,7 @@ class MenuItemController extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   MenuItemModel? get selectedMenuItem => _selectedMenuItem;
+  Map<MenuItemModel, int> get cart => _cart;
 
   Future<void> fetchMenuItemsByCategory(String categoryId) async {
     _isLoading = true;
@@ -89,6 +91,15 @@ class MenuItemController extends ChangeNotifier {
 
   void resetFilter() {
     _filteredMenuItems = [];
+    notifyListeners();
+  }
+
+  void addToCart(MenuItemModel menuItem) {
+    if (_cart.containsKey(menuItem)) {
+      _cart[menuItem] = _cart[menuItem]! + 1;
+    } else {
+      _cart[menuItem] = 1;
+    }
     notifyListeners();
   }
 }
