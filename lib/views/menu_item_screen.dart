@@ -36,7 +36,8 @@ class MenuItemScreenState extends State<MenuItemScreen> {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
       appBar: AppBar(
-        title: const Text('Menu Items', style: AppTheme.headingStyle),
+        title: const Center(
+            child: Text('Menu Items', style: AppTheme.headingStyle)),
         backgroundColor: AppTheme.primaryColor,
       ),
       body: Consumer<MenuItemController>(
@@ -284,6 +285,10 @@ class MenuItemScreenState extends State<MenuItemScreen> {
   }
 
   Widget _buildNutritionalInfoSection(MenuItemModel menuItem) {
+    if (menuItem.nutritionalInfo == null) {
+      return const SizedBox.shrink();
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -294,43 +299,37 @@ class MenuItemScreenState extends State<MenuItemScreen> {
         const SizedBox(height: 8),
         _buildNutritionalInfo(
           'Calories',
-          '${menuItem.nutritionalInfo?.calories} kcal',
+          '${menuItem.nutritionalInfo!.calories} kcal',
         ),
         _buildNutritionalInfo(
           'Fat',
-          '${menuItem.nutritionalInfo?.fat}g',
+          '${menuItem.nutritionalInfo!.fat}g',
         ),
         _buildNutritionalInfo(
           'Carbs',
-          '${menuItem.nutritionalInfo?.carbs}g',
+          '${menuItem.nutritionalInfo!.carbs}g',
         ),
         _buildNutritionalInfo(
           'Protein',
-          '${menuItem.nutritionalInfo?.protein}g',
+          '${menuItem.nutritionalInfo!.protein}g',
         ),
-        const SizedBox(height: 16),
       ],
     );
   }
 
-  Widget _buildNutritionalInfo(String title, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            title,
-            style: AppTheme.bodyTextStyle.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Text(
-            value,
-            style: AppTheme.bodyTextStyle,
-          ),
-        ],
-      ),
+  Widget _buildNutritionalInfo(String label, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: AppTheme.bodyTextStyle,
+        ),
+        Text(
+          value,
+          style: AppTheme.bodyTextStyle,
+        ),
+      ],
     );
   }
 }

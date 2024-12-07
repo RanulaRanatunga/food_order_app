@@ -32,7 +32,9 @@ class MenuItemModel {
     this.modifierGroupId,
   });
 
-   factory MenuItemModel.fromJson(Map<String, dynamic> json) {
+  factory MenuItemModel.fromJson(Map<String, dynamic> json) {
+    print('MenuItem JSON: $json');
+
     return MenuItemModel(
       menuItemId: json['MenuItemID'] ?? '',
       name: json['Name']?['en'] ?? 'Unnamed Item', 

@@ -34,7 +34,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
       appBar: AppBar(
-        title: const Text('Categories', style: AppTheme.headingStyle),
+        title: const Center(
+            child: Text('Categories', style: AppTheme.headingStyle)),
         backgroundColor: AppTheme.primaryColor,
       ),
       body: Consumer<CategoryController>(

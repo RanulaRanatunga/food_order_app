@@ -50,9 +50,9 @@ class MenuItemController extends ChangeNotifier {
 
       _menuItems = menuItemsJson
           .where((itemJson) {
-            final categoryIdFromItem = itemJson['CategoryID'];
-            return categoryIdFromItem != null &&
-                categoryIdFromItem == categoryId;
+            final categoryIdsFromItem = itemJson['CategoryIDs'];
+            return categoryIdsFromItem != null &&
+                (categoryIdsFromItem as List).contains(categoryId);
           })
           .map((itemJson) => MenuItemModel.fromJson(itemJson))
           .toList();
