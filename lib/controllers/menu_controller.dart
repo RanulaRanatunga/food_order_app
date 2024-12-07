@@ -22,7 +22,7 @@ class MenuController extends ChangeNotifier {
         _menus = (jsonData['Result']['Menu'] as List).map((menuJson) {
           return MenuModel.fromJson(menuJson);
         }).toList();
-        // print('Menus: $_menus');
+        // print(' ***** $_menus');
       } else {
         _menus = [];
       }

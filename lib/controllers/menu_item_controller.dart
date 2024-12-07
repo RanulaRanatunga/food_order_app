@@ -30,8 +30,6 @@ class MenuItemController extends ChangeNotifier {
 
     try {
       final jsonData = await DataService.loadJsonData();
-      print('Raw JSON Data: $jsonData');
-
       if (jsonData['Status'] != true) {
         _errorMessage = 'Data loading failed';
         return;
@@ -44,7 +42,6 @@ class MenuItemController extends ChangeNotifier {
       }
 
       final List<dynamic> menuItemsJson = jsonData['Result']['Items'];
-      print('Menu Items Count: ${menuItemsJson.length}');
 
       if (menuItemsJson.isEmpty) {
         _errorMessage = 'No menu items found';
@@ -60,14 +57,11 @@ class MenuItemController extends ChangeNotifier {
           .map((itemJson) => MenuItemModel.fromJson(itemJson))
           .toList();
 
-      print('Filtered Menu Items Count: ${_menuItems.length}');
-
       if (_menuItems.isEmpty) {
         _errorMessage = 'No menu items found for this category';
       }
     } catch (e) {
       _errorMessage = 'Error: $e';
-      print('Error in fetchMenuItemsByCategory: $e');
       _menuItems = [];
     } finally {
       _isLoading = false;

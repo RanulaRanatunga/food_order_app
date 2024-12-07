@@ -38,7 +38,6 @@ class _MenuScreenState extends State<MenuScreen> {
       ),
       body: Consumer<app.MenuController>(
         builder: (context, menuController, child) {
-          // print('Menus length: ${menuController.menus.length}');
           if (menuController.menus.isEmpty) {
             return const Center(
               child: Text(
