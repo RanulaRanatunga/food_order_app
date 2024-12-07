@@ -11,67 +11,40 @@ import '../models/category_model.dart';
 
 class CategoryController extends ChangeNotifier {
   List<CategoryModel> _categories = [];
-
   List<CategoryModel> _filteredCategories = [];
-
   bool _isLoading = false;
 
   String? _errorMessage;
-
   List<CategoryModel> get categories =>
       _filteredCategories.isNotEmpty ? _filteredCategories : _categories;
-
   bool get isLoading => _isLoading;
-
   String? get errorMessage => _errorMessage;
-
   Future<void> fetchCategories(String menuId) async {
     _isLoading = true;
-
     _errorMessage = null;
-
     notifyListeners();
 
     try {
       final jsonData = await DataService.loadJsonData();
-
-      print('Raw JSON Data: $jsonData');
-
       if (jsonData['Status'] == true &&
           jsonData['Result'] != null &&
           jsonData['Result']['Categories'] is List) {
         final List<dynamic> categoriesJson = jsonData['Result']['Categories'];
-
-        print('Categories JSON: $categoriesJson');
         _categories = categoriesJson.where((categoryJson) {
-          print('Category MenuID: ${categoryJson['MenuID']}');
-          print('Passed MenuID: $menuId');
-
           return categoryJson['MenuID'] == menuId;
         }).map((categoryJson) {
-          print('Processing category: $categoryJson');
-
           return CategoryModel.fromJson(categoryJson);
         }).toList();
-
-        print('Filtered Categories: $_categories');
-
         _categories.sort((a, b) => a.name.compareTo(b.name));
         _isLoading = false;
-
         notifyListeners();
       } else {
         throw Exception('Invalid categories data structure');
       }
     } catch (e) {
-      print('Error fetching categories: $e');
-
       _isLoading = false;
-
       _errorMessage = 'Failed to load categories: ${e.toString()}';
-
       _categories = [];
-
       notifyListeners();
     }
   }

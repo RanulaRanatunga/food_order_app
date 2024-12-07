@@ -23,7 +23,7 @@ class MenuItemController extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
   MenuItemModel? get selectedMenuItem => _selectedMenuItem;
 
-  Future<void> fetchMenuItems(String categoryId) async {
+  Future<void> fetchMenuItemsByCategory(String categoryId) async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
@@ -31,32 +31,46 @@ class MenuItemController extends ChangeNotifier {
     try {
       final jsonData = await DataService.loadJsonData();
       print('Raw JSON Data: $jsonData');
-      if (jsonData['Status'] == true && jsonData['Result'] != null) {
-        final List<dynamic> menuItemsJson =
-            jsonData['Result']['MenuItems'] ?? [];
-        print('Menu Items JSON: $menuItemsJson');
-        _menuItems = menuItemsJson.where((itemJson) {
-          print('Item CategoryIDs: ${itemJson['CategoryIDs']}');
-          print('Passed CategoryID: $categoryId');
-          return (itemJson['CategoryIDs'] is List)
-              ? (itemJson['CategoryIDs'] as List).contains(categoryId)
-              : false;
-        }).map((itemJson) {
-          print('Processing menu item: $itemJson');
-          return MenuItemModel.fromJson(itemJson);
-        }).toList();
-        print('Filtered Menu Items: $_menuItems');
-        _menuItems.sort((a, b) => a.name.compareTo(b.name));
-        _isLoading = false;
-        notifyListeners();
-      } else {
-        throw Exception('Invalid menu items data structure');
+
+      if (jsonData['Status'] != true) {
+        _errorMessage = 'Data loading failed';
+        return;
+      }
+
+      if (jsonData['Result'] == null ||
+          !jsonData['Result'].containsKey('Items')) {
+        _errorMessage = 'Invalid data structure';
+        return;
+      }
+
+      final List<dynamic> menuItemsJson = jsonData['Result']['Items'];
+      print('Menu Items Count: ${menuItemsJson.length}');
+
+      if (menuItemsJson.isEmpty) {
+        _errorMessage = 'No menu items found';
+        return;
+      }
+
+      _menuItems = menuItemsJson
+          .where((itemJson) {
+            final categoryIdFromItem = itemJson['CategoryID'];
+            return categoryIdFromItem != null &&
+                categoryIdFromItem == categoryId;
+          })
+          .map((itemJson) => MenuItemModel.fromJson(itemJson))
+          .toList();
+
+      print('Filtered Menu Items Count: ${_menuItems.length}');
+
+      if (_menuItems.isEmpty) {
+        _errorMessage = 'No menu items found for this category';
       }
     } catch (e) {
-      print('Error fetching menu items: $e');
-      _isLoading = false;
-      _errorMessage = 'Failed to load menu items: ${e.toString()}';
+      _errorMessage = 'Error: $e';
+      print('Error in fetchMenuItemsByCategory: $e');
       _menuItems = [];
+    } finally {
+      _isLoading = false;
       notifyListeners();
     }
   }

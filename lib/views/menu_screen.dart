@@ -32,7 +32,7 @@ class _MenuScreenState extends State<MenuScreen> {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
       appBar: AppBar(
-        title: const Text('Food Menus', style: AppTheme.headingStyle),
+        title: const Center(child: Text('Food Menus', style: AppTheme.headingStyle)),
         backgroundColor: AppTheme.primaryColor,
         elevation: 0,
       ),

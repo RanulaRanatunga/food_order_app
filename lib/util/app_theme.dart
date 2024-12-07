@@ -20,7 +20,7 @@ class AppTheme {
     color: textColor,
   );
 
-  static final TextStyle subtitleStyle = TextStyle(
+  static final TextStyle bodyTextStyle = TextStyle(
     fontSize: 16,
     color: Colors.grey[600],
   );

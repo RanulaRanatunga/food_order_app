@@ -46,7 +46,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
               ),
             );
           }
-
           if (categoryController.errorMessage != null) {
             return Center(
               child: Text(
@@ -56,7 +55,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
               ),
             );
           }
-
           if (categoryController.categories.isEmpty) {
             return const Center(
               child: Text(

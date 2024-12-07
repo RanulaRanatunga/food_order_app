@@ -8,6 +8,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_order_app/controllers/category_controller.dart';
 import 'package:food_order_app/controllers/menu_item_controller.dart';
+import 'package:food_order_app/controllers/modifier_controller.dart';
 import 'package:food_order_app/views/menu_screen.dart';
 import 'package:provider/provider.dart';
 import 'controllers/menu_controller.dart' as app_menu_controller;
@@ -20,7 +21,7 @@ void main() {
             create: (context) => app_menu_controller.MenuController()),
         ChangeNotifierProvider(create: (context) => CategoryController()),
         ChangeNotifierProvider(create: (context) => MenuItemController()),
-        // ChangeNotifierProvider(create: (context) => ModifierController()),
+        ChangeNotifierProvider(create: (context) => ModifierController()),
       ],
       child: const MyApp(),
     ),
