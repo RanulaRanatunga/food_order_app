@@ -22,6 +22,8 @@ class MenuItemScreen extends StatefulWidget {
 }
 
 class MenuItemScreenState extends State<MenuItemScreen> {
+  String selectedMenu = 'Lunch : 10am - 5pm';
+
   @override
   void initState() {
     super.initState();
@@ -40,44 +42,132 @@ class MenuItemScreenState extends State<MenuItemScreen> {
             child: Text('Menu Items', style: AppTheme.headingStyle)),
         backgroundColor: AppTheme.primaryColor,
       ),
-      body: Consumer<MenuItemController>(
-        builder: (context, menuItemController, child) {
-          if (menuItemController.isLoading) {
-            return const Center(
-              child: CircularProgressIndicator(
-                color: AppTheme.primaryColor,
-              ),
-            );
-          }
-          if (menuItemController.errorMessage != null) {
-            return Center(
-              child: Text(
-                menuItemController.errorMessage!,
-                style: AppTheme.headingStyle.copyWith(color: Colors.red),
-                textAlign: TextAlign.center,
-              ),
-            );
-          }
-          if (menuItemController.menuItems.isEmpty) {
-            return Center(
-              child: Text(
-                menuItemController.errorMessage ??
-                    'No menu items found for this category',
-                style: AppTheme.headingStyle,
-                textAlign: TextAlign.center,
-              ),
-            );
-          }
-          return ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: menuItemController.menuItems.length,
-            itemBuilder: (context, index) {
-              final menuItem = menuItemController.menuItems[index];
-              return _buildMenuItemCard(menuItem);
-            },
-          );
-        },
+      body: Column(
+        children: [
+          ElevatedButton(
+            onPressed: _showSelectMenuBottomSheet,
+            child: const Text('Select Menu'),
+          ),
+          Expanded(
+            child: Consumer<MenuItemController>(
+              builder: (context, menuItemController, child) {
+                if (menuItemController.isLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      color: AppTheme.primaryColor,
+                    ),
+                  );
+                }
+                if (menuItemController.errorMessage != null) {
+                  return Center(
+                    child: Text(
+                      menuItemController.errorMessage!,
+                      style: AppTheme.headingStyle.copyWith(color: Colors.red),
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                }
+                if (menuItemController.menuItems.isEmpty) {
+                  return Center(
+                    child: Text(
+                      menuItemController.errorMessage ??
+                          'No menu items found for this category',
+                      style: AppTheme.headingStyle,
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                }
+                return ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: menuItemController.menuItems.length,
+                  itemBuilder: (context, index) {
+                    final menuItem = menuItemController.menuItems[index];
+                    return _buildMenuItemCard(menuItem);
+                  },
+                );
+              },
+            ),
+          ),
+        ],
       ),
+    );
+  }
+
+  void _showSelectMenuBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+          ),
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Select menu',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 16),
+              RadioListTile(
+                title: const Text('Lunch : 10am - 5pm'),
+                value: 'Lunch : 10am - 5pm',
+                groupValue: selectedMenu,
+                onChanged: (value) {
+                  setState(() {
+                    selectedMenu = value.toString();
+                  });
+                  Navigator.of(context).pop();
+                },
+              ),
+              RadioListTile(
+                title: const Text('Breakfast : 5pm - 11pm'),
+                value: 'Breakfast : 5pm - 11pm',
+                groupValue: selectedMenu,
+                onChanged: (value) {
+                  setState(() {
+                    selectedMenu = value.toString();
+                  });
+                  Navigator.of(context).pop();
+                },
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: AppTheme.primaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(32.0),
+                        ),
+                      ),
+                      child: const Text("Done"),
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        );
+      },
     );
   }
 
